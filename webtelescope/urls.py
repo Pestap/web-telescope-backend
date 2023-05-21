@@ -26,5 +26,9 @@ urlpatterns = [
     path('chapters/<int:chapter_id>', ChapterDetailView.as_view()),
     path('topics/<int:topic_id>', TopicDetailView.as_view()),
     path('paragraphs/<int:paragraph_id>', ParagraphDetailView.as_view()),
+    path('tests/<int:test_id>', TestDetailView.as_view()),
+    path('questions/<int:question_id>', QuestionDetailView.as_view()),
+    path('answers/<int:answer_id>', AnswerDetailViewNoResult.as_view()),
+    path('answers/<int:answer_id>/check', AnswerDetailViewResult.as_view()),
     path('admin', admin.site.urls),
 ]

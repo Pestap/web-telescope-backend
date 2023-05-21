@@ -54,6 +54,7 @@ class SectionDetailView(APIView):
         serializer = SectionSerializer(section)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class ChapterDetailView(APIView):
 
     def get_object(self, chapter_id):
@@ -101,4 +102,68 @@ class ParagraphDetailView(APIView):
             return Response({"res" : "Paragraph with a provided id does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = ParagraphSerializer(paragraph)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AnswerDetailViewNoResult(APIView):
+    def get_object(self, answer_id):
+        try:
+            return Answer.objects.get(id=answer_id)
+        except Answer.DoesNotExist:
+            return None
+
+    def get(self, request, answer_id, *args, **kwargs):
+        answer = self.get_object(answer_id)
+        if not answer:
+            return Response({"res" : "Answer with a provided id does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AnswerSerializerNoResult(answer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AnswerDetailViewResult(APIView):
+    def get_object(self, answer_id):
+        try:
+            return Answer.objects.get(id=answer_id)
+        except Answer.DoesNotExist:
+            return None
+
+    def get(self, request, answer_id, *args, **kwargs):
+        answer = self.get_object(answer_id)
+        if not answer:
+            return Response({"res" : "Answer with a provided id does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AnswerSerializerWithResult(answer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class QuestionDetailView(APIView):
+    def get_object(self, question_id):
+        try:
+            return Question.objects.get(id=question_id)
+        except Question.DoesNotExist:
+            return None
+
+    def get(self, request, question_id, *args, **kwargs):
+        question = self.get_object(question_id)
+        if not question:
+            return Response({"res" : "Question with a provided id does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = QuestionSerializer(question)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class TestDetailView(APIView):
+    def get_object(self, test_id):
+        try:
+            return Test.objects.get(id=test_id)
+        except Test.DoesNotExist:
+            return None
+
+    def get(self, request, test_id, *args, **kwargs):
+        test = self.get_object(test_id)
+        if not test:
+            return Response({"res" : "Test with a provided id does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = TestSerializer(test)
         return Response(serializer.data, status=status.HTTP_200_OK)

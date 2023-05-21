@@ -91,8 +91,8 @@ class UserProfile(models.Model):
     id = models.IntegerField(primary_key=True)
     role = models.CharField(max_length=30, default="user")
     email = models.CharField(max_length=40, default="default@webtelescope.com")
-    level = models.IntegerField(max_length=0)
-    xp = models.IntegerField(max_length=0)
+    level = models.IntegerField()
+    xp = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_profile")
 
 
@@ -160,6 +160,10 @@ class Test(models.Model):
     class Meta:
         db_table = 'TESTS'
 
+    @property
+    def api_url(self):
+        return "/tests/" + str(self.id)
+
 
 class Question(models.Model):
     # id automatyczne
@@ -170,6 +174,10 @@ class Question(models.Model):
 
     class Meta:
         db_table = 'QUESTIONS'
+
+    @property
+    def api_url(self):
+        return "/questions/" + str(self.id)
 
 
 class Answer(models.Model):
@@ -182,6 +190,14 @@ class Answer(models.Model):
 
     class Meta:
         db_table = 'ANSWERS'
+
+    @property
+    def api_url(self):
+        return "/answers/" + str(self.id)
+
+    @property
+    def api_url_check(self):
+        return "/answers/" + str(self.id) + "/check"
 
 
 class Score(models.Model):
