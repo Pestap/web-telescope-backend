@@ -12,7 +12,7 @@ class PhotoSerializer(serializers.ModelSerializer):
 class PhotoSmallSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
-        fields = ['id']
+        fields = ['api_url']
 
 
 class ParagraphSerializer(serializers.ModelSerializer):
@@ -26,7 +26,7 @@ class ParagraphSerializer(serializers.ModelSerializer):
 class ParagraphSmallSerializer(serializers.ModelSerializer):
     class Meta:
         model = Paragraph
-        fields = ['id']
+        fields = ['api_url']
 class TopicSerializer(serializers.ModelSerializer):
     photos = PhotoSmallSerializer(many=True, allow_null=True)
     paragraphs = ParagraphSmallSerializer(many=True)
@@ -39,12 +39,13 @@ class TopicSerializer(serializers.ModelSerializer):
 class TopicSmallSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
-        fields = ['id']
+        fields = ['api_url']
 
 
 class ChapterSerializer(serializers.ModelSerializer):
     photos = PhotoSmallSerializer(many=True, allow_null=True)
     topics = TopicSmallSerializer(many=True)
+    
     class Meta:
         model = Chapter
         fields = ['id', 'title', 'summary', 'time_investment', 'topics', 'photos']
@@ -53,7 +54,7 @@ class ChapterSerializer(serializers.ModelSerializer):
 class ChapterSmallSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chapter
-        fields = ['id']
+        fields = ['api_url']
 
 
 class SectionSerializer(serializers.ModelSerializer):

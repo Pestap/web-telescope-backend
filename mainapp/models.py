@@ -14,6 +14,9 @@ class Photo(models.Model):
     class Meta:
         db_table = 'PHOTOS'
 
+    @property
+    def api_url(self):
+        return "/photos/" + str(self.id)
 
 class Section(models.Model):
     # id automatyczne
@@ -25,6 +28,10 @@ class Section(models.Model):
 
     class Meta:
         db_table = 'SECTIONS'
+
+    @property
+    def api_url(self):
+        return "/sections/" + str(self.id)
 
 
 class Chapter(models.Model):
@@ -38,6 +45,10 @@ class Chapter(models.Model):
 
     class Meta:
         db_table = 'CHAPTERS'
+
+    @property
+    def api_url(self):
+        return "/chapters/" + str(self.id)
 
 
 class Topic(models.Model):
@@ -54,6 +65,10 @@ class Topic(models.Model):
     class Meta:
         db_table = 'TOPICS'
 
+    @property
+    def api_url(self):
+        return "/topics/" + str(self.id)
+
 
 class Paragraph(models.Model):
     # id automatyczne
@@ -65,6 +80,10 @@ class Paragraph(models.Model):
 
     class Meta:
         db_table = 'PARAGRAPHS'
+
+    @property
+    def api_url(self):
+        return "/paragraphs/" + str(self.id)
 
 
 class UserProfile(models.Model):
