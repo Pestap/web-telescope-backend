@@ -45,7 +45,7 @@ class TopicSmallSerializer(serializers.ModelSerializer):
 class ChapterSerializer(serializers.ModelSerializer):
     photos = PhotoSmallSerializer(many=True, allow_null=True)
     topics = TopicSmallSerializer(many=True)
-    
+
     class Meta:
         model = Chapter
         fields = ['id', 'title', 'summary', 'time_investment', 'topics', 'photos']

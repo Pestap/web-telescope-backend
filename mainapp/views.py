@@ -38,6 +38,21 @@ class PhotoDetailApiView(APIView):
         serializer = PhotoSerializer(photo)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class SectionDetailView(APIView):
+
+    def get_object(self, section_id):
+        try:
+            return Section.objects.get(id=section_id)
+        except Section.DoesNotExist:
+            return None
+
+    def get(self, request, section_id, *args, **kwargs):
+        section = self.get_object(section_id)
+        if not section:
+            return Response({"res" : "Section with a provided id does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = SectionSerializer(section)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ChapterDetailView(APIView):
 
