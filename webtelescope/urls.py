@@ -16,7 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from mainapp.views import *
+
 
 urlpatterns = [
+    path('photos', PhotoApiView.as_view()),
+    path('photos/<int:photo_id>', PhotoDetailApiView.as_view()),
+    path('sections/', SectionView.as_view()),
+    path('chapters/<int:chapter_id>', ChapterDetailView.as_view()),
+    path('topics/<int:topic_id>', TopicDetailView.as_view()),
+    path('paragraphs/<int:paragraph_id>', ParagraphDetailView.as_view()),
     path('admin/', admin.site.urls),
 ]
