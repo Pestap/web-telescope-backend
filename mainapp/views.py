@@ -167,3 +167,26 @@ class TestDetailView(APIView):
 
         serializer = TestSerializer(test)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserDetailView(APIView):
+    def get_object(self, user_id):
+        try:
+            return UserProfile.objects.get(id=user_id)
+        except UserProfile.DoesNotExist:
+            return None
+
+    def get(self, request, user_id, *args, **kwargs):
+        user = self.get_object(user_id)
+        if not user:
+            return Response({"res" : "User with a provided id does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserScoreView(APIView):
+    def get(self, request, user_id, *args, **kwargs):
+        scores = Score.objects.filter(user=user_id)
+        serializer = ScoreSerializer(scores, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

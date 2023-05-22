@@ -30,5 +30,8 @@ urlpatterns = [
     path('questions/<int:question_id>', QuestionDetailView.as_view()),
     path('answers/<int:answer_id>', AnswerDetailViewNoResult.as_view()),
     path('answers/<int:answer_id>/check', AnswerDetailViewResult.as_view()),
+    path('users/<int:user_id>', UserDetailView.as_view()),
+    path('users/<int:user_id>/scores', UserScoreView.as_view()),
     path('admin', admin.site.urls),
+    path('admin/', admin.site.urls),
 ]

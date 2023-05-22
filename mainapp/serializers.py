@@ -108,3 +108,20 @@ class TestSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'number_of_questions', 'questions']
 
 
+class TestSmallSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Test
+        fields = ['id', 'title']
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['id', 'role', 'email', 'level', 'xp']
+
+
+class ScoreSerializer(serializers.ModelSerializer):
+    test = TestSmallSerializer()
+    class Meta:
+        model = Score
+        fields = ['score', 'date', 'user', 'test']
+
+
