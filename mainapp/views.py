@@ -38,6 +38,7 @@ class PhotoDetailApiView(APIView):
         serializer = PhotoSerializer(photo)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class SectionDetailView(APIView):
 
     def get_object(self, section_id):
@@ -184,9 +185,42 @@ class UserDetailView(APIView):
         serializer = UserProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    
+
+
 
 class UserScoreView(APIView):
     def get(self, request, user_id, *args, **kwargs):
         scores = Score.objects.filter(user=user_id)
         serializer = ScoreSerializer(scores, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, user_id, *args, **kwargs):
+        # Get user
+        user = User.objects.get(id=user_id)
+        # Get test
+        test = Test.objects.get(id=request.data.get('test'))
+        if not user or not test:
+            return Response({"res": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
+        data = {
+            'score': request.data.get('score'),
+            'date': request.data.get('date'),
+            'user': user.id,
+            'test': test.id
+        }
+
+        serializer = ScoreSerializerForPost(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

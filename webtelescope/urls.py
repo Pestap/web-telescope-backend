@@ -34,4 +34,5 @@ urlpatterns = [
     path('users/<int:user_id>/scores', UserScoreView.as_view()),
     path('admin', admin.site.urls),
     path('admin/', admin.site.urls),
+    path('users', UserView.as_view())
 ]

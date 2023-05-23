@@ -82,8 +82,8 @@ DATABASES = {
     #}
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'astro',
-        'USER': 'root',
+        'NAME': 'astronomy_app',
+        'USER': 'root', #change to astronomy_app_user when I WIN THE WAR WITH DOCKER COMPOSE USING CACHE :)
         'PASSWORD': 'pgeti',
         'HOST': '127.0.0.1',
         'PORT': '3306',
