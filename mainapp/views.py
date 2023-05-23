@@ -170,6 +170,15 @@ class TestDetailView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class UserView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserDetailView(APIView):
     def get_object(self, user_id):
         try:
@@ -185,7 +194,24 @@ class UserDetailView(APIView):
         serializer = UserProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    
+    def post(self, request, *args, **kwargs):
+
+        serializer_user = UserSerializer(data=request.data)
+        if serializer_user.is_valid():
+            serializer_user.save()
+            # pobieramy usera
+            user = User.objects.get(username=request.data.get('username'))
+            request.data['id'] = user.id # przypisujemy id usera do id
+            request.data['user'] = user.id  # przypisujemy id usera do id
+            serializer_user_profile = UserProfileSerializerForPost(data=request.data)
+            if serializer_user_profile.is_valid():
+                serializer_user_profile.save()
+
+                return Response(request.data, status=status.HTTP_201_CREATED)
+            user.delete()
+            return Response(serializer_user_profile.errors, status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer_user.errors, status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -216,11 +242,5 @@ class UserScoreView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserView(APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 

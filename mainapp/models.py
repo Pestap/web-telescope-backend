@@ -106,8 +106,6 @@ class UserProfile(models.Model):
     id = models.IntegerField(primary_key=True)
     role = models.CharField(max_length=30, default="user")
     email = models.CharField(max_length=40, default="default@webtelescope.com")
-    #password = models.CharField(max_length=512)
-    #username = models.CharField(max_length=512)
     level = models.IntegerField()
     xp = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_profile")

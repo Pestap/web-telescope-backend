@@ -121,6 +121,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'role', 'email', 'level', 'xp']
 
 
+class UserProfileSerializerForPost(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserProfile
+        fields = ['id', 'role', 'email', 'level', 'xp', 'user']
+
 class ScoreSerializer(serializers.ModelSerializer):
     test = TestSmallSerializer()
 
