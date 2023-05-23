@@ -40,7 +40,7 @@ class TopicSerializer(serializers.ModelSerializer):
 class TopicSmallSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
-        fields = ['api_url']
+        fields = ['api_url', 'id', 'title']
 
 
 class ChapterSerializer(serializers.ModelSerializer):
@@ -127,6 +127,11 @@ class UserProfileSerializerForPost(serializers.ModelSerializer):
         model = UserProfile
         fields = ['id', 'role', 'email', 'level', 'xp', 'user']
 
+class UserProfileCompletedTopicSerializer(serializers.ModelSerializer):
+    completed_topics = TopicSmallSerializer(many=True)
+    class Meta:
+        model = UserProfile
+        fields = ['id', 'role', 'email', 'level', 'xp', 'completed_topics']
 class ScoreSerializer(serializers.ModelSerializer):
     test = TestSmallSerializer()
 
