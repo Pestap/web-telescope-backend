@@ -20,21 +20,25 @@ from mainapp.views import *
 
 
 urlpatterns = [
-    path('photos/<int:photo_id>', PhotoDetailApiView.as_view()),
+    # EDUCATION PART
+    path('photos/<int:photo_id>', PhotoDetailView.as_view()),
     path('sections', SectionView.as_view()),
     path('sections/<int:section_id>', SectionDetailView.as_view()),
     path('chapters/<int:chapter_id>', ChapterDetailView.as_view()),
     path('topics/<int:topic_id>', TopicDetailView.as_view()),
     path('paragraphs/<int:paragraph_id>', ParagraphDetailView.as_view()),
+    # TEST PART
     path('tests/<int:test_id>', TestDetailView.as_view()),
     path('questions/<int:question_id>', QuestionDetailView.as_view()),
     path('answers/<int:answer_id>', AnswerDetailViewNoResult.as_view()),
     path('answers/<int:answer_id>/check', AnswerDetailViewResult.as_view()),
+    # USER RELATED PART
+    path('users', UserDetailView.as_view()),
     path('users/<int:user_id>', UserDetailView.as_view()),
     path('users/<int:user_id>/scores', UserScoreView.as_view()),
     path('users/<int:user_id>/completed_topics', UserCompletedTopicsView.as_view()),
     path('users/<int:user_id>/completed_topics/<int:topic_id>', UserCompletedTopicsView.as_view()),
+    # ADMIN PART
     path('admin', admin.site.urls),
     path('admin/', admin.site.urls),
-    path('users', UserDetailView.as_view())
 ]

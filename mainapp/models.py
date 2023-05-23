@@ -18,6 +18,7 @@ class Photo(models.Model):
     def api_url(self):
         return "/photos/" + str(self.id)
 
+
 class Section(models.Model):
     # id automatyczne
     id = models.IntegerField(primary_key=True)
