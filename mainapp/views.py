@@ -1,3 +1,5 @@
+import math
+
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.views import APIView
@@ -377,8 +379,21 @@ class UserCompletedTopicsView(APIView):
         completed_topic.topic = topic
         completed_topic.save()
 
-        # TODO: xp adding based on topic difficulty ( x 0.5, 1.0, 1.5 ) and level handling
+        # User gains XP after completing a topic
+        factor = 1
+        if topic.difficulty.lower() == 'łatwy':
+            factor = 0.5
+        elif topic.difficulty.lower() == 'trudny':
+            factor = 1.5
 
+        # calculate xp gain based on time investment of topic and difficulty
+        xp_gain = math.floor(topic.time_investment * factor)
+        # add xp
+        user.xp += xp_gain
+        # calculate user new level
+        user.level = user.xp // 100
+
+        user.save()
         # Add completed topic to user
 
         return Response(status=status.HTTP_200_OK)
@@ -397,6 +412,22 @@ class UserCompletedTopicsView(APIView):
 
         if not CompletedTopic.objects.filter(user=user_id, topic=topic.id).exists():
             return Response({"Reason": "That user has NOT completed that topic"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # User loses XP if the topic is unmarked as completed
+        factor = 1
+        if topic.difficulty.lower() == 'łatwy':
+            factor = 0.5
+        elif topic.difficulty.lower() == 'trudny':
+            factor = 1.5
+
+        # calculate xp gain based on time investment of topic and difficulty
+        xp_gain = math.floor(topic.time_investment * factor)
+        # subtract the xp_gained from total user xp
+        user.xp -= xp_gain
+
+        # calculate user new level
+        user.level = user.xp // 100
+        user.save()
 
         completed_topic = CompletedTopic.objects.get(user=user_id, topic=topic_id)
         completed_topic.delete()
