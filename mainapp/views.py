@@ -335,101 +335,140 @@ class UserDetailView(APIView):
 
 
 class UserCompletedTopicsView(APIView):
+    """
+    View for fetching user's completed topics
+    """
     def get(self, request, user_id, *args, **kwargs):
+        """
+        GET method for fetching topics completed by the user
+        """
         user = UserProfile.objects.get(id=user_id)
         if not user:
-            return Response({"res": "User does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+            # If invalid id
+            return Response({"Reason": "User with provided id does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Fetch topics that have been completed by the user
         topics = Topic.objects.filter(completed_topics__in=user.completed_topics.all())
 
+        # Serialize and return the result
         serializer = TopicSmallSerializer(topics, many=True)
-        print(user.completed_topics.all().values())
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, user_id, *args, **kwargs):
+        """
+        POST method for marking topics as completed
+        """
+        # Get the user and topic
         user = UserProfile.objects.get(id=user_id)
-        topic = Topic.objects.get(id=request.data.get('id'))
+        topic = Topic.objects.get(id=request.data.get('topic_id'))
 
+        # Check if both exist
         if not user or not topic:
-            return Response({"res":"Topic or user does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Reason": "Topic or user id does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Check if topic already completed by user
+        if CompletedTopic.objects.filter(user=user_id, topic=topic.id).exists():
+            return Response({"Reason": "That user already completed that topic"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        # Create CompletedTopic object
         completed_topic = CompletedTopic.objects.create()
         completed_topic.user = user
         completed_topic.topic = topic
         completed_topic.save()
 
-        user.completed_topics.add(completed_topic)
-        user.save()
+        # TODO: xp adding based on topic difficulty ( x 0.5, 1.0, 1.5 ) and level handling
+
+        # Add completed topic to user
 
         return Response(status=status.HTTP_200_OK)
 
     def delete(self, request, user_id, topic_id, *args, **kwargs):
+        """
+        DELETE method for deleting CampletedTopics
+        """
+        # Get both user and topic
         user = UserProfile.objects.get(id=user_id)
         topic = Topic.objects.get(id=topic_id)
 
         if not user or not topic:
-            return Response({"res":"Topic or user does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Reason": "Topic or user with provided id does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
-        completedTopic = CompletedTopic.objects.get(user=user, topic=topic)
 
-        if not completedTopic:
-            return Response({"res": "User has not complted that topic"}, status=status.HTTP_400_BAD_REQUEST)
+        if not CompletedTopic.objects.filter(user=user_id, topic=topic.id).exists():
+            return Response({"Reason": "That user has NOT completed that topic"}, status=status.HTTP_400_BAD_REQUEST)
 
-        completedTopic.delete()
+        completed_topic = CompletedTopic.objects.get(user=user_id, topic=topic_id)
+        completed_topic.delete()
 
-        user.save()
-        topic.save()
 
-        return Response({"res": "Uncompleted the toopic"}, status=status.HTTP_200_OK)
+        return Response({"Result": "Topic is no longer marked as completed"}, status=status.HTTP_200_OK)
 
 
 class UserFavouritedTopicsView(APIView):
+    """
+    View for fetching user's favourited topics
+    """
     def get(self, request, user_id, *args, **kwargs):
+        """
+        GET method for fetching topics favourited by the user
+        """
+        # Fetch user
         user = UserProfile.objects.get(id=user_id)
         if not user:
-            return Response({"res": "User does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+            # If invalid id
+            return Response({"Reason": "User with provided id does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Fetch topics that have been marked as favourite by the user
         topics = Topic.objects.filter(favourited_topics__in=user.favourited_topics.all())
 
+        # Serialize and return the result
         serializer = TopicSmallSerializer(topics, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, user_id, *args, **kwargs):
+        """
+        POST method for marking topics as favourited
+        """
+        # Get the user and topic
         user = UserProfile.objects.get(id=user_id)
-        topic = Topic.objects.get(id=request.data.get('id'))
+        topic = Topic.objects.get(id=request.data.get('topic_id'))
 
+        # Check if both exist
         if not user or not topic:
-            return Response({"res":"Topic or user does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Reason": "Topic or user id does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Check if topic already completed by user
+        if FavouritedTopic.objects.filter(user=user_id, topic=topic.id).exists():
+            return Response({"Reason": "That user already marked that topic as favourite"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create Favourited object object
         favourited_topic = FavouritedTopic.objects.create()
         favourited_topic.user = user
         favourited_topic.topic = topic
         favourited_topic.save()
 
-        user.favourited_topics.add(favourited_topic)
-        user.save()
-
         return Response(status=status.HTTP_200_OK)
 
     def delete(self, request, user_id, topic_id, *args, **kwargs):
+        """
+        DELETE method for unfavouriting Topics
+        """
         user = UserProfile.objects.get(id=user_id)
         topic = Topic.objects.get(id=topic_id)
 
         if not user or not topic:
-            return Response({"res":"Topic or user does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Reason": "Topic or user with provided id does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
-        favouritedTopic = FavouritedTopic.objects.get(user=user, topic=topic)
 
-        if not favouritedTopic:
-            return Response({"res": "User has not complted that topic"}, status=status.HTTP_400_BAD_REQUEST)
 
-        favouritedTopic.delete()
+        if not FavouritedTopic.objects.filter(user=user, topic=topic).exists():
+            return Response({"Reason": "User has not marked that topic as favourite"}, status=status.HTTP_400_BAD_REQUEST)
 
-        user.save()
-        topic.save()
+        favourited_topic = FavouritedTopic.objects.get(user=user, topic=topic)
+        favourited_topic.delete()
 
-        return Response({"res": "Un-favourited the toopic"}, status=status.HTTP_200_OK)
+        return Response({"Result": "Topic in no longer marked as favourite"}, status=status.HTTP_200_OK)
 
 class UserScoreView(APIView):
     def get(self, request, user_id, *args, **kwargs):

@@ -183,14 +183,22 @@ class UserProfileSerializerForPost(serializers.ModelSerializer):
 
 
 class UserProfileCompletedTopicSerializer(serializers.ModelSerializer):
-    completed_topics = TopicSmallSerializer(many=True)
+    """
+    A serializer to use when fetching user with completed topics
+    """
+    completed_topics = TopicSmallSerializer(many=True) # completed_topics small representation
+
     class Meta:
         model = UserProfile
         fields = ['id', 'role', 'email', 'level', 'xp', 'completed_topics']
 
 
 class UserProfileFavouritedTopicSerializer(serializers.ModelSerializer):
-    favourited_topics = TopicSmallSerializer(many=True)
+    """
+    A serializer to use when fetching user's favourited topics
+    """
+    favourited_topics = TopicSmallSerializer(many=True) # favourired topics small represenation
+
     class Meta:
         model = UserProfile
         fields = ['id', 'role', 'email', 'level', 'xp', 'favourited_topics']

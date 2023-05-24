@@ -36,8 +36,12 @@ urlpatterns = [
     path('users', UserDetailView.as_view()),
     path('users/<int:user_id>', UserDetailView.as_view()),
     path('users/<int:user_id>/scores', UserScoreView.as_view()),
+    # topics completed by the user
     path('users/<int:user_id>/completed_topics', UserCompletedTopicsView.as_view()),
     path('users/<int:user_id>/completed_topics/<int:topic_id>', UserCompletedTopicsView.as_view()),
+    # topics favourited by the user
+    path('users/<int:user_id>/favourited_topics', UserFavouritedTopicsView.as_view()),
+    path('users/<int:user_id>/favourited_topics/<int:topic_id>', UserFavouritedTopicsView.as_view()),
     # ADMIN PART
     path('admin', admin.site.urls),
     path('admin/', admin.site.urls),
