@@ -501,30 +501,46 @@ class UserFavouritedTopicsView(APIView):
 
         return Response({"Result": "Topic in no longer marked as favourite"}, status=status.HTTP_200_OK)
 
+
 class UserScoreView(APIView):
+    """
+    View for fetching user scores
+    """
     def get(self, request, user_id, *args, **kwargs):
+        """
+        GET method for fetching Scores by user id
+        """
         scores = Score.objects.filter(user=user_id)
         serializer = ScoreSerializer(scores, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, user_id, *args, **kwargs):
+        """
+        POST method for posting new scores achieved by the user
+        """
         # Get user
         user = User.objects.get(id=user_id)
         # Get test
-        test = Test.objects.get(id=request.data.get('test'))
+        test = Test.objects.get(id=request.data.get('test_id'))
         if not user or not test:
-            return Response({"res": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
+            # Handle invalid data
+            return Response({"Reason": "User or test with provided id does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create Score from request
         data = {
             'score': request.data.get('score'),
             'date': request.data.get('date'),
             'user': user.id,
             'test': test.id
         }
-
+        # Serialize score
         serializer = ScoreSerializerForPost(data=data)
         if serializer.is_valid():
+            # Check if score is valid, save if yes
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        # Handle invalid request data
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

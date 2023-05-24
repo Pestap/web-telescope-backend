@@ -160,7 +160,7 @@ class TestSmallSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Test
-        fields = ['id', 'title', 'api_url']
+        fields = ['id', 'title', 'number_of_questions', 'api_url']
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -205,6 +205,9 @@ class UserProfileFavouritedTopicSerializer(serializers.ModelSerializer):
 
 
 class ScoreSerializer(serializers.ModelSerializer):
+    """
+    Score serializer when fetchin scores
+    """
     test = TestSmallSerializer()
 
     class Meta:
@@ -213,12 +216,18 @@ class ScoreSerializer(serializers.ModelSerializer):
 
 
 class ScoreSerializerForPost(serializers.ModelSerializer):
+    """
+    Score serializer for posting scores - test id instead of a whole test object
+    """
     class Meta:
         model = Score
         fields = ['score', 'date', 'user', 'test']
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """
+    User serializer used for creating users
+    """
     class Meta:
         model = User
         fields = ('username', 'password', 'email')

@@ -35,6 +35,7 @@ urlpatterns = [
     # USER RELATED PART
     path('users', UserDetailView.as_view()),
     path('users/<int:user_id>', UserDetailView.as_view()),
+    # user scores
     path('users/<int:user_id>/scores', UserScoreView.as_view()),
     # topics completed by the user
     path('users/<int:user_id>/completed_topics', UserCompletedTopicsView.as_view()),
