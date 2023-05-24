@@ -519,7 +519,7 @@ class UserScoreView(APIView):
         POST method for posting new scores achieved by the user
         """
         # Get user
-        user = User.objects.get(id=user_id)
+        user = UserProfile.objects.get(id=user_id)
         # Get test
         test = Test.objects.get(id=request.data.get('test_id'))
         if not user or not test:
@@ -538,6 +538,15 @@ class UserScoreView(APIView):
         if serializer.is_valid():
             # Check if score is valid, save if yes
             serializer.save()
+
+            # XP gain after completing the test
+            max_points = test.number_of_questions
+            gained_points = request.data.get('score')
+            percentage = math.floor(gained_points/max_points * 100)
+            user.xp += percentage
+            user.level = user.xp // 100
+            user.save()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         # Handle invalid request data
