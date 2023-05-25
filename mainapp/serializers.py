@@ -47,7 +47,7 @@ class TopicSerializer(serializers.ModelSerializer):
     Topic serializer to use when fetching Topic objects
     """
     photos = PhotoSmallSerializer(many=True, allow_null=True) # photos in small representation
-    paragraphs = ParagraphSmallSerializer(many=True) # paragraphs in small representation
+    paragraphs = ParagraphSerializer(many=True) # paragraphs in small representation
 
     class Meta:
         model = Topic
@@ -88,7 +88,7 @@ class SectionSerializer(serializers.ModelSerializer):
     """
     A section serializer for use when fetching Section objects
     """
-    chapters = ChapterSmallSerializer(many=True, allow_null=True) # section's chapters in small representation
+    chapters = ChapterSerializer(many=True, allow_null=True) # section's chapters in small representation
 
     class Meta:
         model = Section
