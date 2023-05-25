@@ -39,7 +39,7 @@ class ParagraphSmallSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Paragraph
-        fields = ['api_url'] # TODO: maybe add id and title
+        fields = ['api_url', 'id', 'title'] # TODO: maybe add id and title
 
 
 class TopicSerializer(serializers.ModelSerializer):
@@ -81,7 +81,7 @@ class ChapterSmallSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Chapter
-        fields = ['api_url'] # TODO: maybe add id and title
+        fields = ['api_url', 'id', 'title'] # TODO: maybe add id and title
 
 
 class SectionSerializer(serializers.ModelSerializer):
