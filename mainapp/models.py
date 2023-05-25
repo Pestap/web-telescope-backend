@@ -14,6 +14,10 @@ class Photo(models.Model):
     class Meta:
         db_table = 'PHOTOS'
 
+    @property
+    def api_url(self):
+        return "/photos/" + str(self.id)
+
 
 class Section(models.Model):
     # id automatyczne
@@ -25,6 +29,10 @@ class Section(models.Model):
 
     class Meta:
         db_table = 'SECTIONS'
+
+    @property
+    def api_url(self):
+        return "/sections/" + str(self.id)
 
 
 class Chapter(models.Model):
@@ -38,6 +46,10 @@ class Chapter(models.Model):
 
     class Meta:
         db_table = 'CHAPTERS'
+
+    @property
+    def api_url(self):
+        return "/chapters/" + str(self.id)
 
 
 class Topic(models.Model):
@@ -54,6 +66,10 @@ class Topic(models.Model):
     class Meta:
         db_table = 'TOPICS'
 
+    @property
+    def api_url(self):
+        return "/topics/" + str(self.id)
+
 
 class Paragraph(models.Model):
     # id automatyczne
@@ -66,69 +82,9 @@ class Paragraph(models.Model):
     class Meta:
         db_table = 'PARAGRAPHS'
 
-
-class UserProfile(models.Model):
-    # id automatyczne
-    id = models.IntegerField(primary_key=True)
-    role = models.CharField(max_length=30, default="user")
-    email = models.CharField(max_length=40, default="default@webtelescope.com")
-    level = models.IntegerField(max_length=0)
-    xp = models.IntegerField(max_length=0)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_profile")
-
-
-class CompletedTopic(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="completed_topics", db_column="users_id", primary_key=True)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="completed_topics", db_column="topics_id")
-
-    class Meta:
-        unique_together = ('user', 'topic')
-        db_table = 'COMPLETED_TOPICS'
-
-
-class FavouritedTopic(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="favourited_topics", db_column='users_id', primary_key=True)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="favourited_topics", db_column='topics_id')
-
-    class Meta:
-        unique_together = ('user', 'topic')
-        db_table = 'FAVOURITED_TOPICS'
-
-
-class Authorship(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="autorship", db_column='users_id', primary_key=True)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="autorship", db_column='topics_id')
-
-    class Meta:
-        unique_together = ('user', 'topic')
-        db_table = 'AUTHORSHIP'
-
-
-class ChapterPhoto(models.Model):
-    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name="chapter_photo", db_column='photos_id', primary_key=True)
-    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name="chapter_photo", db_column='chapters_id')
-
-    class Meta:
-        unique_together = ('photo', 'chapter')
-        db_table = 'CHAPTERS_PHOTOS'
-
-
-class TopicPhoto(models.Model):
-    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name="topic_photo", db_column='photos_id', null=True, blank=True)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="topic_photo", db_column='topics_id', primary_key=True)
-
-    class Meta:
-        unique_together = ('photo', 'topic')
-        db_table = 'TOPICS_PHOTOS'
-
-
-class ParagraphPhoto(models.Model):
-    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name="paragraph_photo", blank=True, null=True, db_column='photos_id')
-    paragraph = models.ForeignKey(Paragraph, on_delete=models.CASCADE, related_name="paragraph_photo", db_column='paragraphs_id', primary_key=True)
-
-    class Meta:
-        unique_together = ('photo', 'paragraph')
-        db_table = 'PARAGRAPHS_PHOTOS'
+    @property
+    def api_url(self):
+        return "/paragraphs/" + str(self.id)
 
 
 class Test(models.Model):
@@ -141,6 +97,91 @@ class Test(models.Model):
     class Meta:
         db_table = 'TESTS'
 
+    @property
+    def api_url(self):
+        return "/tests/" + str(self.id)
+
+
+class UserProfile(models.Model):
+    # id automatyczne
+    id = models.IntegerField(primary_key=True)
+    role = models.CharField(max_length=30, default="user")
+    email = models.CharField(max_length=40, default="default@webtelescope.com")
+    level = models.IntegerField()
+    xp = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_profile")
+    tests = models.ManyToManyField(Test, related_name="test_scores", through='Score')
+
+    class Meta:
+        db_table = 'USERS'
+
+
+class CompletedTopic(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="completed_topics", db_column="users_id")
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="completed_topics", db_column="topics_id")
+
+    class Meta:
+        db_table = 'COMPLETED_TOPICS'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'topic'], name='unique user_topic combination - completed')
+        ]
+
+
+class FavouritedTopic(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="favourited_topics", db_column='users_id')
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="favourited_topics", db_column='topics_id')
+
+    class Meta:
+        db_table = 'FAVOURITED_TOPICS'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'topic'], name='unique user_topic combination - favourired')
+        ]
+
+
+class Authorship(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="autorship", db_column='users_id')
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="autorship", db_column='topics_id')
+
+    class Meta:
+        db_table = 'AUTHORSHIP'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'topic'], name='unique user_topic combination - authorship')
+        ]
+
+
+class ChapterPhoto(models.Model):
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name="chapter_photo", db_column='photos_id')
+    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name="chapter_photo", db_column='chapters_id')
+
+    class Meta:
+        db_table = 'CHAPTERS_PHOTOS'
+        constraints = [
+            models.UniqueConstraint(fields=['photo', 'chapter'], name='unique photo_chapter combination')
+        ]
+
+
+class TopicPhoto(models.Model):
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name="topic_photo", db_column='photos_id', null=True, blank=True)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name="topic_photo", db_column='topics_id')
+
+    class Meta:
+        db_table = 'TOPICS_PHOTOS'
+        constraints = [
+            models.UniqueConstraint(fields=['photo', 'topic'], name='unique photo_topic combination')
+        ]
+
+
+class ParagraphPhoto(models.Model):
+    photo = models.ForeignKey(Photo, on_delete=models.CASCADE, related_name="paragraph_photo", blank=True, null=True, db_column='photos_id')
+    paragraph = models.ForeignKey(Paragraph, on_delete=models.CASCADE, related_name="paragraph_photo", db_column='paragraphs_id')
+
+    class Meta:
+        db_table = 'PARAGRAPHS_PHOTOS'
+        constraints = [
+            models.UniqueConstraint(fields=['photo', 'paragraph'], name='unique photo_paragraph combination')
+        ]
+
+
 
 class Question(models.Model):
     # id automatyczne
@@ -151,6 +192,10 @@ class Question(models.Model):
 
     class Meta:
         db_table = 'QUESTIONS'
+
+    @property
+    def api_url(self):
+        return "/questions/" + str(self.id)
 
 
 class Answer(models.Model):
@@ -164,13 +209,23 @@ class Answer(models.Model):
     class Meta:
         db_table = 'ANSWERS'
 
+    @property
+    def api_url(self):
+        return "/answers/" + str(self.id)
+
+    @property
+    def api_url_check(self):
+        return "/answers/" + str(self.id) + "/check"
+
 
 class Score(models.Model):
     score = models.IntegerField(default=0)
     date = models.DateTimeField()
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="scores" ,db_column='users_id', primary_key=True)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="scores" ,db_column='users_id')
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="scores", db_column='tests_id')
 
     class Meta:
-        unique_together = ('date', 'user', 'test')
         db_table = 'SCORES'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'date', 'test'], name='unique combination for test result (test, user, date)')
+        ]

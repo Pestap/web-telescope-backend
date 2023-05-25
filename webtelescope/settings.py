@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-+i3o+25x-&mgfv)@bt^a7v3(e@-141icv9wh(jk7_=2#6qy5c*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kubernetes.docker.internal', '127.0.0.1']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainapp.apps.MainappConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -81,8 +82,8 @@ DATABASES = {
     #}
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'astro',
-        'USER': 'root',
+        'NAME': 'astronomy_app',
+        'USER': 'root', #change to astronomy_app_user when I WIN THE WAR WITH DOCKER COMPOSE USING CACHE :)
         'PASSWORD': 'pgeti',
         'HOST': '127.0.0.1',
         'PORT': '3306',
