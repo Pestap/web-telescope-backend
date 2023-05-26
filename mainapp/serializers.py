@@ -25,7 +25,7 @@ class ParagraphSerializer(serializers.ModelSerializer):
     """
     Paragraph serializer to user when fetching Paragraph objects
     """
-    photos = PhotoSmallSerializer(many=True, allow_null=True)
+    photos = PhotoSerializer(many=True, allow_null=True)
     # get photos of the paragraph (small representation)
 
     class Meta:
@@ -46,7 +46,7 @@ class TopicSerializer(serializers.ModelSerializer):
     """
     Topic serializer to use when fetching Topic objects
     """
-    photos = PhotoSmallSerializer(many=True, allow_null=True) # photos in small representation
+    photos = PhotoSerializer(many=True, allow_null=True) # photos in small representation
     paragraphs = ParagraphSerializer(many=True) # paragraphs in small representation
 
     class Meta:
@@ -67,7 +67,7 @@ class ChapterSerializer(serializers.ModelSerializer):
     """
     Chapter serializer for use when fetching chapter objects
     """
-    photos = PhotoSmallSerializer(many=True, allow_null=True) # photos in small representation
+    photos = PhotoSerializer(many=True, allow_null=True) # photos in small representation
     topics = TopicSmallSerializer(many=True) # topics in small representation
 
     class Meta:
@@ -89,7 +89,7 @@ class SectionSerializer(serializers.ModelSerializer):
     A section serializer for use when fetching Section objects
     """
     chapters = ChapterSerializer(many=True, allow_null=True) # section's chapters in small representation
-
+    photo = PhotoSerializer(allow_null=True)
     class Meta:
         model = Section
         fields = ['id', 'title', 'summary', 'time_investment', 'photo', 'chapters']
