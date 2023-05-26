@@ -556,5 +556,19 @@ class UserScoreView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserLoginView(APIView):
+    """
+    View for logging users in
+    """
+    def post(self, request, *args, **kwargs):
+        username = request.data['username']
+        password_hash = request.data['password']
+
+        if User.objects.filter(username=username, password=password_hash).exists():
+            user = User.objects.get(username=username, password=password_hash)
+
+            return Response({"user_id": user.id}, status=status.HTTP_200_OK)
+
+        return Response({"Reason": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
 
 
