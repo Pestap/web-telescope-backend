@@ -28,6 +28,7 @@ urlpatterns = [
     path('topics/<int:topic_id>', TopicDetailView.as_view()),
     path('paragraphs/<int:paragraph_id>', ParagraphDetailView.as_view()),
     # TEST PART
+    path('sections/<int:section_id>/tests', SectionTestDetailView.as_view()),
     path('tests/<int:test_id>', TestDetailView.as_view()),
     path('questions/<int:question_id>', QuestionDetailView.as_view()),
     path('answers/<int:answer_id>', AnswerDetailViewNoResult.as_view()),

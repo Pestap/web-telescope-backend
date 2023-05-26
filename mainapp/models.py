@@ -43,7 +43,6 @@ class Chapter(models.Model):
     time_investment = models.IntegerField(default=0)
     sections = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="chapters")
     photos = models.ManyToManyField(Photo, related_name="chapter_photos", through='ChapterPhoto')
-
     class Meta:
         db_table = 'CHAPTERS'
 

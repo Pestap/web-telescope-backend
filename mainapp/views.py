@@ -78,6 +78,34 @@ class SectionDetailView(APIView):
         # Serialize the object and return a response
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class SectionTestDetailView(APIView):
+    """
+    A view for fetching tests from one section
+    """
+    @staticmethod
+    def get_object(section_id):
+        """
+        A method for fetching a single object by id
+        """
+        try:
+            return Section.objects.get(id=section_id)
+        except Section.DoesNotExist:
+            return None
+
+    def get(self, request, section_id, *args, **kwargs):
+        """
+        GET method for fetching one Section object by section_id
+        """
+        section = self.get_object(section_id)
+        if not section:
+            # Handle the case when there is no section with a given id
+            return Response({"Reason": "Section with a provided id does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        tests = Test.objects.filter(chapters_id__in=section.chapters.all())
+        # Serialize the object and return a response
+        serializer = TestSerializer(tests, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ChapterDetailView(APIView):
     """
