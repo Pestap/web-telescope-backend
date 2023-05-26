@@ -323,6 +323,7 @@ class UserDetailView(APIView):
             request.data['user'] = user.id
             request.data['level'] = 0
             request.data['xp'] = 0
+            request.data['role'] = 'normal_user'
 
             serializer_user_profile = UserProfileSerializerForPost(data=request.data)
             if serializer_user_profile.is_valid():
