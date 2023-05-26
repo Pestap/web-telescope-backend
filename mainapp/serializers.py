@@ -127,7 +127,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     """
     Question serializer for use when fetching questions
     """
-    answers = AnswerSmallSerializer(many=True) # answers in small representaion
+    answers = AnswerSerializerNoResult(many=True) # answers in small representaion
 
     class Meta:
         model = Question
@@ -147,7 +147,7 @@ class TestSerializer(serializers.ModelSerializer):
     """
     Test serializer for use when fetching Test objects
     """
-    questions = QuestionSmallSerializer(many=True) # questions in small representation
+    questions = QuestionSerializer(many=True) # questions in small representation
 
     class Meta:
         model = Test
