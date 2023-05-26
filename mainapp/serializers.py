@@ -109,6 +109,7 @@ class AnswerSerializerWithResult(serializers.ModelSerializer):
     """
     Answer serializer with result
     """
+    photo = PhotoSerializer()
     class Meta:
         model = Answer
         fields = ['id', 'text', 'photo', 'is_correct']
@@ -128,6 +129,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     Question serializer for use when fetching questions
     """
     answers = AnswerSerializerNoResult(many=True) # answers in small representaion
+    photo = PhotoSerializer()
 
     class Meta:
         model = Question
