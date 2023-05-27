@@ -69,6 +69,10 @@ class Topic(models.Model):
     def api_url(self):
         return "/topics/" + str(self.id)
 
+    @property
+    def section(self):
+        return self.chapters.sections.id
+
 
 class Paragraph(models.Model):
     # id automatyczne
@@ -139,6 +143,7 @@ class FavouritedTopic(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['user', 'topic'], name='unique user_topic combination - favourired')
         ]
+
 
 
 class Authorship(models.Model):

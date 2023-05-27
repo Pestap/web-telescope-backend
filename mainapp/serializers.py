@@ -60,7 +60,7 @@ class TopicSmallSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Topic
-        fields = ['api_url', 'id', 'title']
+        fields = ['api_url', 'id', 'title', 'section']
 
 
 class ChapterSerializer(serializers.ModelSerializer):
