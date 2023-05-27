@@ -172,7 +172,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ['id', 'role', 'email', 'level', 'xp']
+        fields = ['id', 'role', 'email', 'level', 'xp', 'username']
 
 
 class UserProfileSerializerForPost(serializers.ModelSerializer):

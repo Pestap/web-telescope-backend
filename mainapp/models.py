@@ -114,6 +114,10 @@ class UserProfile(models.Model):
     class Meta:
         db_table = 'USERS'
 
+    @property
+    def username(self):
+        return self.user.username
+
 
 class CompletedTopic(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="completed_topics", db_column="users_id")
